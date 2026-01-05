@@ -87,6 +87,7 @@ export default function PasteForm({ onSuccess, onError }: PasteFormProps) {
             onChange={(e) => setContent(e.target.value)}
             placeholder="Enter your text here..."
             className="w-full h-64 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
+            style={{ color: '#000000', backgroundColor: '#ffffff', colorScheme: 'light' }}
             required
           />
           <p className="mt-1 text-sm text-gray-500">
@@ -109,6 +110,7 @@ export default function PasteForm({ onSuccess, onError }: PasteFormProps) {
               min="60"
               max="31536000"
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              style={{ color: '#000000', backgroundColor: '#ffffff', colorScheme: 'light' }}
             />
             <p className="mt-1 text-xs text-gray-500">
               Leave empty for no expiration
@@ -128,6 +130,7 @@ export default function PasteForm({ onSuccess, onError }: PasteFormProps) {
               min="1"
               max="1000000"
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              style={{ color: '#000000', backgroundColor: '#ffffff', colorScheme: 'light' }}
             />
             <p className="mt-1 text-xs text-gray-500">
               Leave empty for unlimited views

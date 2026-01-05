@@ -29,25 +29,35 @@ body {
 /* Fix for form inputs - ensure consistent colors across all browsers and modes */
 input,
 textarea,
-select {
+select,
+input[type="text"],
+input[type="number"] {
   color: #000000 !important;
   background-color: #ffffff !important;
-  border-color: #d1d5db;
+  border-color: #d1d5db !important;
+  -webkit-text-fill-color: #000000 !important;
+  color-scheme: light !important;
 }
 
 /* Placeholder text color */
 input::placeholder,
-textarea::placeholder {
+textarea::placeholder,
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
   color: #6b7280 !important;
-  opacity: 1;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #6b7280 !important;
 }
 
 /* Focus state */
 input:focus,
 textarea:focus,
 select:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid #3b82f6 !important;
   outline-offset: 2px;
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  -webkit-text-fill-color: #000000 !important;
 }
 
 /* Disabled state */
@@ -56,5 +66,18 @@ textarea:disabled,
 select:disabled {
   background-color: #f3f4f6 !important;
   color: #9ca3af !important;
+  -webkit-text-fill-color: #9ca3af !important;
   cursor: not-allowed;
+}
+
+/* Additional browser-specific fixes */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: #000000 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
