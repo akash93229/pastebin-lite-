@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { CreatePasteRequest } from '@/types/paste'
-import { generatePasteId, generateShareableUrl } from '@/lib/id-generator'
-import { validateCreatePasteRequest } from '@/lib/paste-validation'
-import { PasteStorage } from '@/lib/storage'
+import { pasteService } from '@/services/paste-service'
+import { getCurrentTimeForRequest } from '@/services/time-service'
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,46 +30,31 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate the request
-    const validation = validateCreatePasteRequest(body)
-    if (!validation.isValid) {
-      return NextResponse.json(
-        { error: `Validation failed: ${validation.errors.join(', ')}` },
-        { 
-          status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      )
-    }
-
-    const id = generatePasteId()
+    // Get current time (handles test mode)
+    const currentTime = getCurrentTimeForRequest(request.headers)
     const baseUrl = `${request.nextUrl.protocol}//${request.nextUrl.host}`
-    const url = generateShareableUrl(id, baseUrl)
-    const currentTime = new Date()
 
-    // Calculate expiration
-    let expiresAt: Date | undefined
-    if (body.ttl) {
-      expiresAt = new Date(currentTime.getTime() + body.ttl * 1000)
-    }
+    // Create paste using service
+    const result = await pasteService.createPaste(body, currentTime, baseUrl)
 
-    // Store paste using shared storage
-    PasteStorage.set(id, {
-      id,
-      content: validation.sanitizedContent || body.content,
-      createdAt: currentTime,
-      expiresAt,
-      maxViews: body.max_views,
-      viewCount: 0
-    })
-
-    return NextResponse.json({ id, url }, {
+    return NextResponse.json(result, {
       status: 201,
       headers: { 'Content-Type': 'application/json' }
     })
 
   } catch (error) {
     console.error('Error creating paste:', error)
+    
+    // Handle validation errors
+    if (error instanceof Error && error.message.includes('Validation failed')) {
+      return NextResponse.json(
+        { error: error.message },
+        { 
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      )
+    }
     
     return NextResponse.json(
       { error: 'Internal server error' },

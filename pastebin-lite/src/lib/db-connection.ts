@@ -56,7 +56,7 @@ export async function executeWithConnection<T>(
 
 // Transaction wrapper
 export async function executeInTransaction<T>(
-  operation: (tx: Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$extends'>) => Promise<T>
+  operation: (tx: Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => Promise<T>
 ): Promise<T> {
   return executeWithConnection(() => 
     prisma.$transaction(operation)

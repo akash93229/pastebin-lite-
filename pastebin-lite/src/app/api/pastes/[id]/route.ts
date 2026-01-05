@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { validatePasteId } from '@/lib/paste-validation'
-import { PasteStorage } from '@/lib/storage'
+import { pasteService } from '@/services/paste-service'
+import { getCurrentTimeForRequest } from '@/services/time-service'
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
+    // Await the params in Next.js 16
+    const { id } = await params
+    
     // Validate paste ID
-    const { id } = params
     if (!validatePasteId(id)) {
       return NextResponse.json(
         { error: 'Invalid paste ID' },
@@ -22,8 +25,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       )
     }
 
-    // Get paste from storage
-    const paste = PasteStorage.get(id)
+    // Get current time (handles test mode)
+    const currentTime = getCurrentTimeForRequest(request.headers)
+
+    // Get paste with view increment (for API access)
+    const paste = await pasteService.getPasteWithViewIncrement(id, currentTime)
+    
     if (!paste) {
       return NextResponse.json(
         { error: 'Paste not found or has expired' },
@@ -34,38 +41,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       )
     }
 
-    // Check if paste has expired
-    if (PasteStorage.isExpired(paste)) {
-      return NextResponse.json(
-        { error: 'Paste not found or has expired' },
-        { 
-          status: 404,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      )
-    }
-
-    // Increment view count
-    PasteStorage.incrementViewCount(id)
-
-    // Calculate remaining views
-    let remainingViews: number | undefined
-    if (paste.maxViews) {
-      remainingViews = Math.max(0, paste.maxViews - paste.viewCount)
-    }
-
-    // Return paste data
-    const response = {
-      id: paste.id,
-      content: paste.content,
-      created_at: paste.createdAt.toISOString(),
-      expires_at: paste.expiresAt?.toISOString(),
-      max_views: paste.maxViews,
-      view_count: paste.viewCount,
-      remaining_views: remainingViews,
-    }
-
-    return NextResponse.json(response, {
+    return NextResponse.json(paste, {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     })

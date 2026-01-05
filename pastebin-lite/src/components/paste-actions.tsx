@@ -4,12 +4,14 @@ import { useState } from 'react'
 
 interface PasteActionsProps {
   content: string
-  pasteUrl: string
+  pasteId: string
 }
 
-export default function PasteActions({ content, pasteUrl }: PasteActionsProps) {
+export default function PasteActions({ content, pasteId }: PasteActionsProps) {
   const [copyContentStatus, setCopyContentStatus] = useState<'idle' | 'copied' | 'error'>('idle')
   const [copyUrlStatus, setCopyUrlStatus] = useState<'idle' | 'copied' | 'error'>('idle')
+
+  const pasteUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/p/${pasteId}`
 
   const copyToClipboard = async (text: string, type: 'content' | 'url') => {
     try {

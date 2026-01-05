@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -8,17 +10,17 @@ export default function NotFound() {
             Paste Not Found
           </h2>
           <p className="text-gray-600 max-w-md mx-auto">
-            The paste you're looking for doesn't exist, has expired, or has exceeded its view limit.
+            The paste you&apos;re looking for doesn&apos;t exist, has expired, or has exceeded its view limit.
           </p>
         </div>
         
         <div className="space-y-4">
-          <a
+          <Link
             href="/"
             className="inline-block px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
           >
             Create New Paste
-          </a>
+          </Link>
           
           <div className="text-sm text-gray-500">
             <p>Possible reasons:</p>
