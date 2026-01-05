@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  color-scheme: light; /* Force light mode for consistent appearance */
 }
 
 @theme inline {
@@ -23,4 +24,37 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Fix for form inputs - ensure consistent colors across all browsers and modes */
+input,
+textarea,
+select {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  border-color: #d1d5db;
+}
+
+/* Placeholder text color */
+input::placeholder,
+textarea::placeholder {
+  color: #6b7280 !important;
+  opacity: 1;
+}
+
+/* Focus state */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Disabled state */
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: #f3f4f6 !important;
+  color: #9ca3af !important;
+  cursor: not-allowed;
 }
